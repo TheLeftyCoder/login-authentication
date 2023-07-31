@@ -19,16 +19,30 @@ margin-bottom : 20px;
 margin-top : 20px;
 `
 
-// save the token to check whether the user is logged in ot not , 
+// save the token to check whether the user is logged in or not , 
 // 
 
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
 
+  const [token,settoken] = useState('')
+
+  // const token = 'your_token_here';
+
+  // Save the token in local storage
+  localStorage.setItem('token', token);
+
+  // Retrieve the token from local storage
+  const storedToken = localStorage.getItem('token');
+
+  // Use the stored token
+  console.log(storedToken);
+
+
   const [otp,setotp] = useState('');
 
-  const [verifyotp,setverifyotp] = useState('');
+  // const [verifyotp,setverifyotp] = useState('');
   
   const [phoneNumber, setPhoneNumber] = useState('');
 
@@ -55,8 +69,13 @@ export default function SignInSide() {
     )
     .then(response => {
       console.log(response.data);
-      console.log(response.data.status);
-      setotp(response.data.otp);
+      // console.log(response.data.status);
+      if(response.data.status === "OK"){
+        setotp(response.data.otp);
+        settoken(response.data.token)
+      }else{
+        alert("user do not exist")
+      }
     })
     .catch(error => {
       console.error(error);
@@ -116,8 +135,8 @@ export default function SignInSide() {
             <Number>
             <TextField
       label="OTP"
-      value={verifyotp}
-      onChange={(e) => setverifyotp(e.target.value)}
+      value={otp}
+      onChange={(e) => setotp(e.target.value)}
       placeholder="Enter otp"
       fullWidth
       name = "phone"
